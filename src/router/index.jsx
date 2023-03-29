@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import { lazy } from "react";
-const Home = lazy(() => import("../views/Home"));
-const NotFound = lazy(() => import("../views/NotFound"));
+const Home = lazy(() => import("@/views/Home"));
+const NotFound = lazy(() => import("@/views/NotFound"));
 
 const Router = () => {
   return (
