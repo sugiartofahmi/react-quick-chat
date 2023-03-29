@@ -12,18 +12,27 @@ const Home = () => {
   const [message, setMessage] = useState("");
   const [country, setCountry] = useState("62");
   const [result, setResult] = useState([]);
+  const [valid, setValid] = useState(false);
 
   const submit = () => {
     try {
-      setResult((prev) => [
-        ...prev,
-        {
-          number: `${country}${
-            number.startsWith("0") ? number.replace("0", "") : number
-          }`,
+      if (number.includes(",")) {
+        const multiNumber = number.split(",").map((el) => ({
+          number: `${country}${el.startsWith("0") ? el.replace("0", "") : el}`,
           message: message,
-        },
-      ]);
+        }));
+        setResult((prev) => prev.concat(multiNumber));
+      } else {
+        setResult((prev) => [
+          ...prev,
+          {
+            number: `${country}${
+              number.startsWith("0") ? number.replace("0", "") : number
+            }`,
+            message: message,
+          },
+        ]);
+      }
       setMessage("");
       setNumber("");
     } catch (err) {
@@ -57,13 +66,24 @@ const Home = () => {
               <div className="w-2/3 ">
                 <input
                   value={number}
-                  onChange={(e) => setNumber(e.target.value)}
-                  type="number"
+                  onChange={(e) => {
+                    setNumber(e.target.value);
+                    const regex =
+                      /([a-zA-Z-’/`~!#*$@_%+=.^&(){}[\]|;:”"<>?\\])/g;
+
+                    setValid(regex.test(number));
+                  }}
+                  type="text"
                   className="w-full h-full rounded-lg p-3  text-sm   focus:ring-2 focus:ring-blue-500 block  bg-gray-700 border-gray-600 placeholder-gray-400 dark:text-white focus:outline-none"
-                  placeholder="Example : 893353xxxx"
+                  placeholder="893353xxxx,893353xxxx,893353xxxx"
                 />
               </div>
             </div>
+            {valid && (
+              <h1 className="text-left text-sm font-medium text-red-500">
+                Special characters and letters are not allowed
+              </h1>
+            )}
           </div>
           <div className="flex flex-start flex-col gap-y-2">
             <h1 className=" font-bold text-lg text-left">Message :</h1>
@@ -79,7 +99,7 @@ const Home = () => {
             </div>
           </div>
           <button
-            disabled={!number}
+            disabled={!number | valid}
             onClick={submit}
             className="bg-blue-500 hover:bg-blue-600 disabled:opacity-10 disabled:hover:bg-blue-500  text-white font-medium py-2 px-4 rounded-lg w-[15vh]"
           >
