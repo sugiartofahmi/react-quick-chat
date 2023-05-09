@@ -19,7 +19,7 @@ const Home = () => {
       if (number.includes(",")) {
         const multiNumber = number.split(",").map((el) => ({
           number: `${country}${el.startsWith("0") ? el.replace("0", "") : el}`,
-          message: message,
+          message: message.split(" ").join("%20"),
         }));
         setResult((prev) => prev.concat(multiNumber));
       } else {
@@ -29,9 +29,10 @@ const Home = () => {
             number: `${country}${
               number.startsWith("0") ? number.replace("0", "") : number
             }`,
-            message: message,
+            message: message.split(" ").join("%20"),
           },
         ]);
+        console.log(message.split(" ").join("%20"));
       }
       setMessage("");
       setNumber("");
