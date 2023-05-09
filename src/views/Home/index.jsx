@@ -13,33 +13,38 @@ const Home = () => {
   const [country, setCountry] = useState("62");
   const [result, setResult] = useState([]);
   const [valid, setValid] = useState(false);
-
+  const regex = /([a-zA-Z-’/`~!#*$@_%+=.^&(){}[\]|;:”"<>?\\])/gi;
   const submit = () => {
-    try {
-      if (number.includes(",")) {
-        const multiNumber = number.split(",").map((el) => ({
-          number: `${country}${el.startsWith("0") ? el.replace("0", "") : el}`,
-          message: message.split(" ").join("%20"),
-        }));
-        setResult((prev) => prev.concat(multiNumber));
-      } else {
-        setResult((prev) => [
-          ...prev,
-          {
+    if (!regex.test(number)) {
+      try {
+        if (number.includes(",")) {
+          const multiNumber = number.split(",").map((el) => ({
             number: `${country}${
-              number.startsWith("0") ? number.replace("0", "") : number
+              el.startsWith("0") ? el.replace("0", "") : el
             }`,
             message: message.split(" ").join("%20"),
-          },
-        ]);
-        console.log(message.split(" ").join("%20"));
+          }));
+          setResult((prev) => prev.concat(multiNumber));
+        } else {
+          setResult((prev) => [
+            ...prev,
+            {
+              number: `${country}${
+                number.startsWith("0") ? number.replace("0", "") : number
+              }`,
+              message: message.split(" ").join("%20"),
+            },
+          ]);
+        }
+        setMessage("");
+        setNumber("");
+      } catch (err) {
+        console.log(err);
+        setMessage("");
+        setNumber("");
       }
-      setMessage("");
-      setNumber("");
-    } catch (err) {
-      console.log(err);
-      setMessage("");
-      setNumber("");
+    } else {
+      setValid(!valid);
     }
   };
 
@@ -69,9 +74,6 @@ const Home = () => {
                   value={number}
                   onChange={(e) => {
                     setNumber(e.target.value);
-                    const regex =
-                      /([a-zA-Z-’/`~!#*$@_%+=.^&(){}[\]|;:”"<>?\\])/g;
-
                     setValid(regex.test(number));
                   }}
                   type="text"
